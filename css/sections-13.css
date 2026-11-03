@@ -535,3 +535,6 @@
   line-height: 1.5;
   color: var(--lime);
 }
+/* 並べ替え（2026-11-03 近藤さん：成長の見える化→育成価値→テクニカルコーチ）。育成価値の上の余白を確保 */
+.growth + .values { padding-top: 72px; }
+@media (min-width: 900px) { .growth + .values { padding-top: 96px; } }
