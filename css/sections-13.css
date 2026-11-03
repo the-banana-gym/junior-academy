@@ -526,3 +526,12 @@
 @media (max-width: 899px) {
   .fv__visual { bottom: calc(var(--u) * -5 - env(safe-area-inset-bottom)); }
 }
+/* THE BANANA紹介の見出し：上に小さく「好調を作り出す！」（2026-11-03 近藤さん） */
+.banana__pre {
+  display: block;
+  margin-bottom: 6px;
+  font-size: .6em;
+  font-weight: 900;
+  line-height: 1.5;
+  color: var(--lime);
+}
