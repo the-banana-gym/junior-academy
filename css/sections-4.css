@@ -1,0 +1,151 @@
+/* =========================================================
+   2026-11-03 修正分：悩みリスト・ピラミッドの図・煌選手の数字・推薦
+   ========================================================= */
+
+/* ---------- 02 こんな悩み、ありませんか？ ---------- */
+.worries {
+  display: grid;
+  gap: 10px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.worries li {
+  position: relative;
+  padding: 16px 18px 16px 52px;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 4px 14px rgba(11, 31, 58, .06);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+/* チェックの印 */
+.worries li::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 19px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--navy);
+}
+.worries li::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: 23px;
+  width: 7px;
+  height: 11px;
+  border-right: 3px solid var(--lime);
+  border-bottom: 3px solid var(--lime);
+  transform: rotate(45deg);
+}
+.cheer {
+  margin-top: 28px;
+  text-align: center;
+}
+.cheer__lead {
+  margin: 0;
+  font-size: clamp(24px, 6.4vw, 34px);
+  font-weight: 900;
+  line-height: 1.45;
+  color: var(--navy);
+}
+.cheer__text { margin: 10px 0 0; font-size: 16px; line-height: 1.85; color: var(--text-sub); }
+
+/* ---------- 04 ピラミッドの図（SVG） ---------- */
+.pyr__svg {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  margin: 0 auto;
+}
+.pyr__t-en {
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .06em;
+}
+.pyr__t-jp {
+  font-family: var(--jp);
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+/* ---------- 05 煌選手の数字 ---------- */
+.case__from {
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 30px;
+  color: rgba(255, 255, 255, .75);
+}
+.case__arrow {
+  margin: 0 8px;
+  font-size: 24px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, .75);
+}
+.case__stats {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 0;
+}
+.case__stats > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #1a4579;
+}
+.case__stats dt { font-size: 14px; color: rgba(255, 255, 255, .88); }
+.case__stats dd { margin: 0; font-size: 15px; font-weight: 700; }
+.case__stats strong { font-size: 18px; color: var(--lime); }
+
+/* ---------- 05 推薦のひと言 ---------- */
+.recommend {
+  margin: 32px 0 0;
+  padding: 28px 22px;
+  border-radius: 16px;
+  background: var(--lime);
+  color: var(--ink);
+  text-align: center;
+}
+.recommend blockquote { margin: 0; }
+.recommend p {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.6;
+}
+.recommend figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media (min-width: 900px) {
+  .worries { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cheer { margin-top: 40px; }
+  .pyr__svg { max-width: 460px; }
+  .recommend { padding: 40px 32px; }
+  .recommend p { font-size: 28px; }
+}
+
+/* ---------- 06 望月コーチの言葉 ---------- */
+.coach__quote {
+  margin: 24px 0 0;
+  padding: 20px 20px 18px;
+  border-left: 5px solid var(--lime);
+  border-radius: 0 12px 12px 0;
+  background: var(--white);
+  box-shadow: 0 4px 14px rgba(11, 31, 58, .06);
+}
+.coach__quote blockquote { margin: 0; }
+.coach__quote p { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.9; color: var(--text); }
+.coach__quote figcaption { margin-top: 10px; font-size: 13px; color: var(--text-sub); }

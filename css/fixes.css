@@ -1,0 +1,41 @@
+/* =========================================================
+   点検（lp-build audit.js）で見つかった点の手当て
+   - 紺の地はグラデーションだけでなく、ベタの紺色も持たせる（画像やグラデーションが出ない時の保険）
+   - 紺の地の上の半透明カードは、同じ見た目の不透明な色にする（明暗の差を測れるように）
+   ========================================================= */
+.sec--navy { background-color: var(--navy); }
+.case { background-color: #103a6b; }
+.world { background-color: #0b3567; }
+.world__list li { background-color: #153e6e; }
+.growth__steps li { background-color: #133c6d; }
+.radar { background-color: #0e3769; }
+
+/* タップしやすい大きさ（44px以上） */
+.insta__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.faq__item summary { min-height: 56px; }
+
+
+/* 本文へ飛ぶリンク（キーボード操作の人向け。普段は見えない） */
+.skip {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--lime);
+  color: var(--ink);
+  font-weight: 900;
+  text-decoration: none;
+}
+.skip:focus { top: 8px; }
+
+/* ロゴの後ろにかかる濃紺の影を薄める（ロゴの周りだけ。下の文字の読みやすさはそのまま） */
+.fv::before {
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .2) 0, rgba(0, 0, 0, .2) calc(var(--u) * 20), #000 calc(var(--u) * 36));
+          mask-image: linear-gradient(180deg, rgba(0, 0, 0, .2) 0, rgba(0, 0, 0, .2) calc(var(--u) * 20), #000 calc(var(--u) * 36));
+}

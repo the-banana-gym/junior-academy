@@ -1,0 +1,128 @@
+/* =========================================================
+   03 体幹 → 呼吸 → 腹腔内圧（ペットボトルの図）→ 望月コーチの決意
+   紺の地の上に置く
+   ========================================================= */
+.base__key {
+  margin: 36px 0 0;
+  font-size: clamp(22px, 6vw, 30px);
+  font-weight: 900;
+  line-height: 1.5;
+  color: var(--lime);
+}
+.base__text {
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.95;
+  color: rgba(255, 255, 255, .92);
+}
+.base__text--strong {
+  margin-top: 28px;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--white);
+}
+
+/* ---------- ペットボトルの図 ---------- */
+.iap {
+  margin: 28px 0 0;
+  padding: 22px 16px 18px;
+  border-radius: 16px;
+  background-color: #0b3567;
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.iap__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.iap__item { text-align: center; min-width: 0; }
+.iap__item svg { display: block; width: 100%; max-width: 180px; height: auto; margin: 0 auto; overflow: visible; }
+.iap__label {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.5;
+}
+.iap__item--weak .iap__label { color: rgba(255, 255, 255, .9); }
+.iap__item--strong .iap__label { color: var(--lime); }
+.iap__desc {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, .85);
+  text-align: left;
+}
+
+/* ボトルの絵 */
+.iap__body { stroke-width: 3; stroke-linejoin: round; }
+.iap__body--weak { fill: rgba(255, 255, 255, .1); stroke: rgba(255, 255, 255, .6); }
+.iap__body--strong { fill: rgba(230, 251, 2, .16); stroke: var(--lime); }
+.iap__cap { fill: rgba(255, 255, 255, .5); }
+.iap__crease path { fill: none; stroke: rgba(255, 255, 255, .45); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.iap__cap--on { fill: var(--lime); }
+.iap__push path, .iap__press path { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.iap__push path { stroke: #ff9b8a; }
+.iap__press path { stroke: var(--lime); }
+
+/* 動き：外から押されてつぶれる／内側から張る */
+@keyframes iap-squash {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(.9, .94); }
+}
+@keyframes iap-push {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+@keyframes iap-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+.iap__body--weak, .iap__crease { transform-origin: 100px 150px; animation: iap-squash 2.6s ease-in-out infinite; }
+.iap__push { animation: iap-push 2.6s ease-in-out infinite; }
+.iap__body--strong, .iap__press { transform-origin: 100px 150px; animation: iap-breathe 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .iap__body--weak, .iap__crease, .iap__push, .iap__body--strong, .iap__press { animation: none; }
+}
+
+.iap__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, .16);
+  font-size: 13px;
+  color: rgba(255, 255, 255, .88);
+}
+.iap__legend b { color: var(--lime); font-weight: 900; }
+
+/* ---------- 望月コーチの決意 ---------- */
+.base__coach {
+  margin: 32px 0 0;
+  padding: 24px 22px 20px;
+  border-radius: 16px;
+  background-color: var(--white);
+  color: var(--text);
+}
+.base__coach blockquote { margin: 0; }
+.base__coach p { margin: 0; font-size: 16px; line-height: 1.95; }
+.base__coach p + p { margin-top: 12px; }
+.base__coach-will { font-size: 18px !important; font-weight: 900; color: var(--navy); }
+.base__coach figcaption {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+@media (min-width: 900px) {
+  .iap { padding: 32px 32px 24px; max-width: 760px; }
+  .iap__pair { gap: 40px; }
+  .iap__item svg { max-width: 220px; }
+  .iap__desc { font-size: 14px; text-align: center; }
+  .base__coach { padding: 32px 36px 26px; max-width: 760px; }
+  .base__coach p { font-size: 17px; }
+}

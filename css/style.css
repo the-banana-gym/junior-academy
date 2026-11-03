@@ -1,0 +1,652 @@
+/* THE BANANA JUNIOR ACADEMY — ファーストビュー
+   色はデザイン見本（01_reference_approved_firstview.png）から採取
+   寸法は --u（スマホ＝ファーストビューの幅の1%、PC＝固定の目安）の倍数で書く */
+:root {
+  --navy: #012d61;
+  --navy-deep: #011f45;
+  --sky-l: #00448d;   /* 背景画像の最上段の色（左→右） */
+  --sky-m: #0166bb;
+  --sky-r: #0372c7;
+  --lime: #e6fb02;
+  --ink: #070614;     /* CTAの文字 */
+  --white: #ffffff;
+  --jp: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --brush: "Zen Antique", "Noto Serif JP", serif;
+  --en: "Montserrat", "Arial Black", sans-serif;
+  /* メインコピーの書体：斜めの極太ゴシック（2026-11-02 A案に決定） */
+  --catch-font: var(--jp);
+  --catch-weight: 900;
+  --catch-skew: -8deg;
+  --catch-track: -.02em;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--navy-deep);
+  color: var(--white);
+  font-family: var(--jp);
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; height: auto; }
+p, h1 { margin: 0; }
+
+/* ---------- ファーストビュー ---------- */
+.fv {
+  --u: 1cqw;
+  --pad: calc(var(--u) * 5.6);   /* 左右の余白 */
+  container-type: inline-size;
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+  overflow: clip;
+  /* 画像が無い上の空は、画像最上段と同じ色の帯で延ばす */
+  background: linear-gradient(90deg, var(--sky-l) 0%, #01519f 28%, var(--sky-m) 52%, var(--sky-r) 100%);
+}
+/* 左側を濃紺に落として文字を読ませる（見本と同じ考え方） */
+.fv::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(1, 45, 97, .86) 0%, rgba(1, 45, 97, .72) 36%, rgba(1, 45, 97, .3) 50%, rgba(1, 45, 97, 0) 64%),
+    linear-gradient(180deg, rgba(1, 31, 69, .5) 0%, rgba(1, 31, 69, 0) 20%);
+}
+.fv__inner { padding: calc(var(--u) * 5 + env(safe-area-inset-top)) var(--pad) 0; }
+.fv__inner > *:not(.fv__lower),
+.fv__lower > *:not(.fv__visual) {
+  position: relative;
+  z-index: 3;
+}
+
+/* 背景画像：幅94%で右寄せ。富士山の頂上がブランドメッセージの下に来る位置から始める */
+.fv__lower {
+  position: relative;
+  margin-top: calc(var(--u) * 10);
+  min-height: calc(var(--u) * 134.05); /* = 画像の上の位置 9 ＋ 画像の高さ（94 × 1446/1087） */
+}
+.fv__visual {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--u) * 9);
+  right: calc(var(--pad) * -1);
+  width: calc(var(--u) * 94);
+}
+.fv__visual img {
+  width: 100%;
+  /* 上端・左端を空へ溶かし、左上に元から入っている仮の文字の周りだけ透明にする。
+     画像そのものは加工しない（マスクの作り方＝tools/make_mask.py） */
+  -webkit-mask-image: url("../img/hero-mask.png");
+          mask-image: url("../img/hero-mask.png");
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+}
+
+/* ---------- ロゴ ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 3);
+}
+.brand__mark {
+  width: auto;
+  height: calc(var(--u) * 14);
+}
+.brand__rule {
+  align-self: stretch;
+  width: 2px;
+  margin: calc(var(--u) * 1.2) 0;
+  background: rgba(255, 255, 255, .85);
+}
+.brand__name {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.01em;
+}
+.brand__line1 { font-size: calc(var(--u) * 6.2); }
+.brand__line1 em { font-style: italic; color: var(--lime); }
+.brand__line2 { font-size: calc(var(--u) * 4.3); }
+
+/* ---------- 対象説明：「中学生のための」をライムの札にする ---------- */
+.target {
+  margin-top: calc(var(--u) * 6);
+  line-height: 1.5;
+}
+.target__tag {
+  display: inline-block;
+  padding: calc(var(--u) * .9) calc(var(--u) * 3.2);
+  background: var(--lime);
+  color: var(--ink);
+  font-size: calc(var(--u) * 4.6);
+  font-weight: 900;
+  letter-spacing: .04em;
+  transform: skewX(-10deg);
+  box-shadow: 0 3px 12px rgba(0, 18, 50, .35);
+}
+.target__tag > span { display: inline-block; transform: skewX(10deg); }
+.target__sep {
+  /* 区切りの「｜」は札で表す（読み上げでは残す） */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.target__text {
+  display: block;
+  margin-top: calc(var(--u) * 2.4);
+  font-size: calc(var(--u) * 3.6);
+  font-weight: 700;
+  letter-spacing: .01em;
+  text-shadow: 0 1px 8px rgba(0, 20, 60, .55);
+}
+
+/* ---------- メインコピー ---------- */
+.catch {
+  margin-top: calc(var(--u) * 8);
+  font-family: var(--catch-font);
+  font-size: calc(var(--u) * 11.4);
+  font-weight: var(--catch-weight);
+  line-height: 1.18;
+  letter-spacing: var(--catch-track);
+  text-shadow: 0 3px 16px rgba(0, 20, 60, .45);
+}
+.catch__line {
+  display: block;
+  transform: skewX(var(--catch-skew));
+  transform-origin: left bottom;
+}
+.catch__mirai {
+  display: inline-block;
+  margin-right: .04em;
+  font-family: var(--brush);
+  font-weight: 400;
+  font-size: 1.34em;
+  line-height: 1;
+  color: var(--lime);
+  -webkit-text-stroke: .02em var(--lime);
+  paint-order: stroke fill;
+  transform: skewX(-4deg) translateY(.05em);
+  /* ぼかしの影はにじんで見えるので、輪郭のはっきりした影だけにする */
+  text-shadow: 0 .03em 0 rgba(0, 20, 60, .55);
+}
+
+/* ---------- ブランドメッセージ ---------- */
+.message {
+  font-size: calc(var(--u) * 4.9);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--lime);
+  text-shadow: 0 2px 10px rgba(0, 20, 60, .6);
+}
+
+/* ---------- 共感コピー・問いかけ ---------- */
+.empathy,
+.question {
+  font-size: calc(var(--u) * 3.9);
+  line-height: 1.7;
+  text-shadow: 0 2px 10px rgba(0, 20, 60, .65);
+}
+.empathy {
+  margin-top: calc(var(--u) * 6);
+  font-weight: 500;
+}
+.divider {
+  display: block;
+  width: calc(var(--u) * 30);
+  height: 2px;
+  margin: calc(var(--u) * 4) 0 calc(var(--u) * 3.6);
+  background: linear-gradient(90deg, var(--lime) 0%, rgba(230, 251, 2, .2) 100%);
+}
+.question {
+  display: inline-block;   /* 帯を文字の幅に合わせる（人物の顔にかけない） */
+  font-weight: 700;
+}
+/* スマホでは1行目が人物の腕にかかるので、後ろに紺の帯を敷く */
+.question::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(var(--u) * -1.6) calc(var(--u) * -10) calc(var(--u) * -1.6) calc(var(--pad) * -1);
+  background: linear-gradient(90deg, rgba(1, 36, 80, .85) 0%, rgba(1, 36, 80, .85) 62%, rgba(1, 36, 80, 0) 100%);
+  pointer-events: none;
+}
+.pc { display: none; }   /* PCだけで効かせる改行 */
+
+/* ---------- CTA（スマホでは画面の下に付いてくる） ---------- */
+.fv__cta {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  margin-top: calc(var(--u) * -24);
+  padding: 0 calc(var(--u) * 6) calc(var(--u) * 5 + env(safe-area-inset-bottom));
+}
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 2.4);
+  width: 100%;
+  min-height: calc(var(--u) * 14);
+  padding: calc(var(--u) * 3.2) calc(var(--u) * 4);
+  border-radius: calc(var(--u) * 4);
+  background: var(--lime);
+  color: var(--ink);
+  font-size: calc(var(--u) * 4.4);
+  font-weight: 900;
+  letter-spacing: .02em;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0, 18, 50, .35);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.cta > span { white-space: nowrap; }
+.cta__arrow {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+}
+.cta:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0, 18, 50, .42); }
+.cta:active { transform: translateY(1px); }
+.cta:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+}
+
+/* ---------- PC：文字は左の列、写真は右に大きく ---------- */
+@media (min-width: 900px) {
+  .fv {
+    /* 横幅と高さの小さいほうに合わせる＝縦に収まる大きさ */
+    --u: clamp(3.9px, min(.42vw, .5vh), 6.4px);
+    --pad: max(6vw, 48px);
+    max-width: none;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .fv::before {
+    background:
+      linear-gradient(90deg, rgba(1, 45, 97, .9) 0%, rgba(1, 45, 97, .72) 30%, rgba(1, 45, 97, .25) 46%, rgba(1, 45, 97, 0) 58%),
+      linear-gradient(180deg, rgba(1, 31, 69, .45) 0%, rgba(1, 31, 69, 0) 22%);
+  }
+  .fv__inner {
+    width: calc(var(--u) * 100 + var(--pad));
+    max-width: 60%;
+    padding: calc(var(--u) * 6) 0 0 var(--pad);
+  }
+  .catch { margin-top: calc(var(--u) * 6); font-size: calc(var(--u) * 12.5); }
+  .empathy { margin-top: calc(var(--u) * 4.5); }
+  /* 写真はファーストビューの右下に高さいっぱいで置く */
+  .fv__lower {
+    position: static;
+    min-height: 0;
+    margin-top: calc(var(--u) * 6.5);
+  }
+  .fv__visual {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: 100%;
+  }
+  .fv__visual picture,
+  .fv__visual img {
+    height: 100%;
+    width: auto;
+    max-width: none;
+  }
+  /* 写真の左端（芝生）と左の紺の境目をなだらかにする */
+  .fv__visual::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 32%;
+    background: linear-gradient(90deg, #063a78 0%, rgba(6, 58, 120, .6) 45%, rgba(6, 58, 120, 0) 100%);
+    pointer-events: none;
+  }
+  .sp { display: none; }
+  .pc { display: inline; }
+  .question::before { display: none; }
+  .divider { width: calc(var(--u) * 24); }
+  .fv__cta {
+    position: relative;
+    margin-top: calc(var(--u) * 6);
+    padding: 0 0 calc(var(--u) * 6) var(--pad);
+  }
+  .cta {
+    width: auto;
+    display: inline-flex;
+    min-height: 0;
+    padding: calc(var(--u) * 3.6) calc(var(--u) * 7);
+    border-radius: calc(var(--u) * 3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta { transition: none; }
+}
+
+/* =========================================================
+   02〜 本文のセクション（スマホ基準。PCは下の @media で広げる）
+   ========================================================= */
+:root {
+  --paper: #f3f6fb;          /* 明るい地 */
+  --text: #0b1f3a;           /* 明るい地の本文（墨に近い紺） */
+  --text-sub: #3d4f68;
+  --line: #d5deea;
+}
+main { background: var(--paper); }
+.sec { padding: 72px 20px; }
+.sec__inner { max-width: 640px; margin: 0 auto; }
+.sec--light { background: var(--paper); color: var(--text); }
+.sec--navy  { background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%); color: var(--white); }
+.sp { display: inline; }
+.pc { display: none; }
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: .12em;
+  color: var(--navy);
+}
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 4px;
+  margin-right: 10px;
+  vertical-align: middle;
+  background: var(--lime);
+  transform: skewX(-20deg);
+}
+.eyebrow--lime { color: var(--lime); }
+.sec__title {
+  margin: 0;
+  font-size: clamp(26px, 7.2vw, 40px);
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: .01em;
+}
+.sec__lead {
+  margin: 20px 0 0;
+  font-size: 16px;
+  line-height: 1.95;
+}
+.sec--light .sec__lead { color: var(--text-sub); }
+
+/* ---------- 02 親子それぞれの気持ち ---------- */
+.feel__grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 32px;
+}
+.voice {
+  margin: 0;
+  padding: 24px 22px;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(11, 31, 58, .08);
+}
+.voice--kid { border-left: 6px solid var(--lime); }
+.voice--parent { border-left: 6px solid var(--navy); }
+.voice__who {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+.voice__text { margin: 10px 0 0; }
+.voice__text p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.75;
+}
+.voice__text p + p { margin-top: 10px; }
+.feel__bridge {
+  margin: 32px 0 0;
+  padding: 22px 22px;
+  border-radius: 16px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.85;
+}
+
+/* ---------- 03 土台・世界のトップ選手 ---------- */
+.world {
+  margin-top: 36px;
+  padding: 26px 22px;
+  border: 1px solid rgba(230, 251, 2, .45);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .04);
+}
+.world__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.5;
+  color: var(--lime);
+}
+.world__text {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.9;
+}
+.world__list {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.world__list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .08);
+}
+.world__name { font-size: 17px; font-weight: 900; }
+.world__desc { font-size: 14px; color: rgba(255, 255, 255, .85); }
+
+/* ---------- 04 パフォーマンスピラミッド ---------- */
+.pyr { margin-top: 32px; }
+.pyr__shape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pyr__lv {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%);
+  background: var(--navy);
+  color: var(--white);
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .06em;
+}
+.pyr__lv--5 { width: 36%; clip-path: polygon(50% 0, 50% 0, 100% 100%, 0 100%); padding-top: 14px; background: #3b5f8f; }
+.pyr__lv--4 { width: 52%; background: #2a5085; }
+.pyr__lv--3 { width: 68%; background: #1b4479; }
+.pyr__lv--2 { width: 84%; background: #0e386c; }
+.pyr__lv--1 { width: 100%; background: var(--lime); color: var(--ink); }
+
+.pyr__list {
+  display: grid;
+  gap: 10px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.pyr__item {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.pyr__item p { margin: 0; }
+.pyr__en {
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: .08em;
+  color: var(--navy);
+}
+.pyr__jp { margin-top: 2px !important; font-size: 18px; font-weight: 900; }
+.pyr__desc { margin-top: 6px !important; font-size: 15px; line-height: 1.8; color: var(--text-sub); }
+.pyr__item--key {
+  border: 2px solid var(--navy);
+  box-shadow: 0 0 0 4px var(--lime);
+}
+
+.pyr__message {
+  margin-top: 36px;
+  padding: 26px 22px;
+  border-radius: 16px;
+  background: var(--navy);
+  color: var(--white);
+}
+.pyr__message p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.95;
+}
+.pyr__message p + p { margin-top: 14px; color: rgba(255, 255, 255, .88); }
+.pyr__message strong {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 20px;
+  color: var(--lime);
+}
+
+.athletes__title {
+  margin: 48px 0 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.5;
+}
+.athletes {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.athlete {
+  margin: 0;
+  padding: 22px 22px 18px;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(11, 31, 58, .08);
+}
+.athlete blockquote { margin: 0; }
+.athlete blockquote p {
+  position: relative;
+  margin: 0;
+  padding-top: 18px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.9;
+}
+.athlete blockquote p::before {
+  content: "“";
+  position: absolute;
+  top: -14px;
+  left: -4px;
+  font-family: Georgia, serif;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--navy);
+}
+.athlete figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.athlete__name { font-size: 15px; font-weight: 900; }
+.athlete__tag { font-size: 13px; color: var(--text-sub); }
+
+@media (min-width: 900px) {
+  .sec { padding: 112px 48px; }
+  .sec__inner { max-width: 1040px; }
+  .sp { display: none; }
+  .pc { display: inline; }
+  .sec__lead { max-width: 760px; font-size: 17px; }
+  .feel__grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .voice { padding: 32px 30px; }
+  .voice__text p { font-size: 20px; }
+  .feel__bridge { padding: 28px 32px; font-size: 19px; text-align: center; }
+  .world { padding: 36px 36px; }
+  .world__list { grid-template-columns: repeat(3, 1fr); }
+  .pyr {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .pyr__lv { height: 64px; font-size: 18px; }
+  .pyr__lv--5 { padding-top: 22px; }
+  .pyr__list { margin-top: 0; }
+  .pyr__message { padding: 36px 40px; }
+  .pyr__message p { font-size: 18px; }
+  .pyr__message strong { font-size: 24px; }
+  .athletes { grid-template-columns: 1fr 1fr; gap: 24px; }
+}
+
+/* 日本語を文節で折り返す（対応していないブラウザは通常の折り返し） */
+.sec p, .sec h2, .sec h3, .sec li { word-break: auto-phrase; text-wrap: pretty; }
+.nw { white-space: nowrap; }
+
+/* 短い選手の声（初回体験の感想） */
+.voices {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.voices__item {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--white);
+  border-left: 4px solid var(--lime);
+  box-shadow: 0 4px 14px rgba(11, 31, 58, .06);
+}
+.voices__text { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.7; }
+.voices__who {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.voices__who span { display: inline-block; margin-left: 8px; font-weight: 500; color: var(--text-sub); }
+@media (min-width: 900px) {
+  .voices { grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+}

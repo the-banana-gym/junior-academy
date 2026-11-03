@@ -1,0 +1,143 @@
+/* =========================================================
+   選手の写真・Instagram・体験会の流れ
+   ========================================================= */
+
+/* ---------- 05 選手の写真 ---------- */
+.case__photo {
+  display: block;
+  margin: -26px -22px 20px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  aspect-ratio: 4 / 3;
+  background: rgba(255, 255, 255, .06);
+}
+.case__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* ---------- 06 Instagram ---------- */
+.insta {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.insta__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.insta__title { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.6; }
+.insta__link {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.insta__grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+.insta__grid { list-style: none; padding: 0; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.reel {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 9 / 16;
+  background: var(--navy);
+  color: var(--white);
+  text-decoration: none;
+}
+.reel img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
+.reel:hover img { transform: scale(1.04); }
+.reel__play {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(1, 31, 69, .7);
+}
+.reel__play::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 9px;
+  border-left: 11px solid var(--white);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+.reel__label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px 8px 8px;
+  background: linear-gradient(180deg, rgba(1, 31, 69, 0) 0%, rgba(1, 31, 69, .9) 70%);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.reel:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .reel img { transition: none; } }
+
+/* ---------- 09 体験会の流れ ---------- */
+.flow {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.flow li {
+  position: relative;
+  padding: 16px 18px 16px 18px;
+  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.flow li + li::before {
+  content: "";
+  position: absolute;
+  left: 30px;
+  top: -11px;
+  width: 2px;
+  height: 10px;
+  background: var(--navy);
+}
+.flow__no {
+  font-family: var(--en);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: .06em;
+  color: var(--navy);
+}
+.flow__h { margin: 2px 0 0; font-size: 18px; font-weight: 900; }
+.flow__p { margin: 4px 0 0; font-size: 15px; line-height: 1.75; color: var(--text-sub); }
+
+@media (min-width: 900px) {
+  .case__photo { margin: -34px -32px 24px; }
+  .insta__grid { max-width: 680px; gap: 16px; }
+  .flow { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .flow li + li::before { left: -12px; top: 50%; width: 10px; height: 2px; }
+}
+
+/* 06 プロフィールカードの写真（望月コーチのInstagramより） */
+.coach__photo {
+  display: block;
+  margin: -24px -22px 18px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  aspect-ratio: 1 / 1;
+}
+.coach__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%; }
+.coach__photo-cap { margin: -10px 0 14px !important; font-size: 12px; color: rgba(255, 255, 255, .8); }

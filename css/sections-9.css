@@ -1,0 +1,32 @@
+/* =========================================================
+   2026-11-03 05：三田選手の見出し／選手の声の動画
+   ========================================================= */
+.case__head {
+  margin: 10px 0 0;
+  font-size: clamp(22px, 6.2vw, 28px);
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--lime);
+}
+
+.vids__title { margin: 36px 0 0; font-size: 20px; font-weight: 900; color: var(--white); }
+.vids { display: grid; gap: 16px; margin: 14px 0 0; }
+.vid { margin: 0; }
+.vid video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #000;
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+.vid figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin-top: 8px; }
+.vid b { font-size: 15px; font-weight: 900; color: var(--white); }
+.vid span { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, .85); }
+
+@media (min-width: 900px) {
+  .vids { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .vid:first-child { grid-column: 1 / -1; }
+}

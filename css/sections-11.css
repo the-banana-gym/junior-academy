@@ -1,0 +1,101 @@
+/* =========================================================
+   2026-11-03 夕方の修正
+   ペットボトル：スマホで写真と説明が1画面に入るように／圧が高い時は内側から外へ押し返す矢印
+   03の締め・望月さんの言葉・THE BANANAの「運動・栄養・マインド」
+   ========================================================= */
+
+/* ---- ペットボトル ---- */
+.rbottle__stage {
+  max-width: none;
+  height: min(48vh, 440px);
+  aspect-ratio: auto;
+}
+.rbottle__img { object-position: 50% 45%; }
+.rbottle__pill {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(1, 31, 69, .88);
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--white);
+  animation: rb-hide 8s steps(1, end) infinite;
+}
+.rbottle__pill--strong { color: var(--lime); opacity: 0; animation-name: rb-show-step; }
+
+/* 圧が高い時：内側から外へ押し返す矢印 */
+.rbottle__out { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; animation: rb-out 8s ease-in-out infinite; }
+.rbottle__out path { fill: none; stroke: var(--lime); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.rbottle__out g { transform-box: view-box; transform-origin: 300px 560px; animation: rb-out-grow 8s ease-in-out infinite; }
+@keyframes rb-out { 0%, 50% { opacity: 0; } 60%, 84% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes rb-out-grow { 0%, 52% { transform: scale(.6); } 64%, 84% { transform: scale(1); } 100% { transform: scale(.6); } }
+
+/* 説明：写真のすぐ下で、状態に合わせて切り替わる */
+.rbottle__caps { display: grid; margin: 12px 0 0; }
+.rbottle__cap {
+  grid-area: 1 / 1;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #0f3869;
+  box-shadow: inset 4px 0 0 var(--white);
+  animation: rb-hide-soft 8s ease-in-out infinite;
+}
+.rbottle__cap--strong { box-shadow: inset 4px 0 0 var(--lime); opacity: 0; animation-name: rb-show-soft; }
+.rbottle__state { position: static; padding: 0; border-radius: 0; background: none; opacity: 1; animation: none; margin: 0; font-size: 17px; font-weight: 900; color: var(--white); }
+.rbottle__state b { color: var(--white); }
+.rbottle__cap--strong .rbottle__state b { color: var(--lime); }
+.rbottle__say { margin: 6px 0 0; font-size: 14px; line-height: 1.75; color: var(--white); }
+.rbottle__then { margin: 6px 0 0; font-size: 14px; font-weight: 700; line-height: 1.7; color: var(--white); }
+@keyframes rb-hide-soft { 0%, 42% { opacity: 1; } 48%, 92% { opacity: 0; } 98%, 100% { opacity: 1; } }
+@keyframes rb-show-soft { 0%, 42% { opacity: 0; } 48%, 92% { opacity: 1; } 98%, 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rbottle__pill, .rbottle__out, .rbottle__out g, .rbottle__cap { animation: none; }
+  .rbottle__out, .rbottle__pill--strong { opacity: 1; }
+  .rbottle__pill--weak { opacity: 0; }
+  /* 動かない時は2つの説明を両方並べる */
+  .rbottle__caps { gap: 10px; }
+  .rbottle__cap { grid-area: auto; opacity: 1; }
+}
+
+/* ---- 03 の締め ---- */
+.base__text--strong {
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: #0f3869;
+  border-left: 5px solid var(--lime);
+  line-height: 1.75;
+}
+
+/* ---- THE BANANA：運動・栄養・マインド ---- */
+.banana__pro {
+  margin: 24px 0 0;
+  padding: 20px 18px;
+  border-radius: 16px;
+  background: #0f3869;
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.banana__pro-lead { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.7; color: var(--white); }
+.banana__pro-list { display: grid; gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.banana__pro-list li { display: grid; grid-template-columns: 5.2em 1fr; gap: 10px; align-items: baseline; font-size: 14px; line-height: 1.7; color: var(--white); }
+.banana__pro-list b { white-space: nowrap; font-size: 16px; font-weight: 900; color: var(--lime); }
+
+/* ---- PC：右の空きをなくす ---- */
+@media (min-width: 900px) {
+  .rbottle { max-width: none; grid-template-columns: 360px 1fr; gap: 16px 32px; }
+  .rbottle__stage { height: 520px; }
+  .rbottle__caps { margin: 0; }
+  .rbottle__state { font-size: 20px; }
+  .rbottle__say, .rbottle__then { font-size: 16px; }
+  .base__text--strong { text-align: center; font-size: 22px; padding: 24px; border-left: 0; border-top: 5px solid var(--lime); }
+  .base__coach { max-width: none; }
+  .base__coach p { font-size: 18px; }
+  .base__coach blockquote { display: grid; grid-template-columns: 1.45fr 1fr; column-gap: 40px; }
+  .base__coach blockquote p { grid-column: 1; }
+  .base__coach blockquote p + p { margin-top: 12px; }
+  .base__coach .base__coach-will { grid-column: 2; grid-row: 1 / 4; align-self: center; margin: 0 !important; padding-left: 32px; border-left: 5px solid var(--lime); font-size: 23px !important; line-height: 1.7; }
+  .banana__pro-list { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .banana__pro-list li { grid-template-columns: 1fr; gap: 4px; }
+}

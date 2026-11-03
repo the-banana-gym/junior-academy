@@ -1,0 +1,528 @@
+/* =========================================================
+   2026-11-03 03 ペットボトル：ボタンを押して切り替える
+   （自動で動く版は文字が読めないため、押した時だけ動かす）
+   ========================================================= */
+.pb {
+  margin: 24px 0 0;
+  padding: 20px 14px 18px;
+  border-radius: 16px;
+  background: #082f5e;
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.pb__title { margin: 0 0 12px; padding: 0 4px; font-size: 16px; font-weight: 900; color: var(--white); }
+
+/* 切り替えボタン */
+.pb__switch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 14px; }
+.pb__btn {
+  appearance: none;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 2px solid rgba(255, 255, 255, .5);
+  border-radius: 999px;
+  background: #0b2a55;
+  color: var(--white);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s, transform .1s;
+}
+.pb__btn:active { transform: scale(.97); }
+.pb__btn[aria-pressed="true"] { border-color: var(--white); background: var(--white); color: #0b2a55; }
+.pb__btn[data-to="strong"][aria-pressed="true"] { border-color: var(--lime); background: var(--lime); color: #0b2a55; }
+.pb__btn:focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
+
+/* ボトルの舞台：ふたと底まで入る引きの構図 */
+.pb__stage {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+  background: radial-gradient(ellipse 70% 55% at 50% 80%, #13284f, #050c1f 75%);
+}
+.pb__img {
+  position: absolute;
+  left: 50%;
+  bottom: 5%;
+  height: 90%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+  /* 写真の四辺を舞台の色になじませる */
+  -webkit-mask-image: radial-gradient(ellipse 50% 52% at 50% 50%, #000 72%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 52% at 50% 50%, #000 72%, transparent 100%);
+  transition: opacity .35s ease;
+}
+.pb__img--strong { opacity: 0; }
+.pb[data-state="strong"] .pb__img--weak { opacity: 0; }
+.pb[data-state="strong"] .pb__img--strong { opacity: 1; }
+
+.pb__glow {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 60%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(230, 251, 2, .35), rgba(230, 251, 2, 0));
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.pb[data-state="strong"] .pb__glow { opacity: 1; }
+
+/* 外から押す矢印（押した瞬間だけ） */
+.pb__in {
+  position: absolute;
+  top: 54%;
+  width: 30px;
+  height: 30px;
+  border-top: 5px solid var(--white);
+  border-right: 5px solid var(--white);
+  border-radius: 3px;
+  opacity: 0;
+}
+.pb__in--l { left: 8%; transform: rotate(45deg); }
+.pb__in--r { right: 8%; transform: rotate(-135deg); }
+
+/* 内から押し返す矢印（強い状態） */
+.pb__out { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .3s ease; }
+.pb__out path { fill: none; stroke: var(--lime); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+.pb__out g { transform-box: view-box; transform-origin: 200px 280px; }
+.pb[data-state="strong"] .pb__out { opacity: 1; }
+
+.pb__pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #011f45;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--white);
+}
+.pb__pill--strong { color: var(--lime); display: none; }
+.pb[data-state="strong"] .pb__pill--weak { display: none; }
+.pb[data-state="strong"] .pb__pill--strong { display: block; }
+
+/* 説明：選んだ方だけを出す（勝手には動かない） */
+.pb__caps { margin: 14px 0 0; }
+.pb__cap {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #0f3869;
+  box-shadow: inset 4px 0 0 var(--white);
+}
+.pb__cap--strong { display: none; box-shadow: inset 4px 0 0 var(--lime); }
+.pb[data-state="strong"] .pb__cap--weak { display: none; }
+.pb[data-state="strong"] .pb__cap--strong { display: block; }
+.pb__state { margin: 0; font-size: 17px; font-weight: 900; color: var(--white); }
+.pb__cap--strong .pb__state b { color: var(--lime); }
+.pb__say { margin: 6px 0 0; font-size: 14px; line-height: 1.75; color: var(--white); }
+.pb__then { margin: 6px 0 0; font-size: 14px; font-weight: 700; line-height: 1.7; color: var(--white); }
+.pb__hint { margin: 10px 0 0; font-size: 13px; font-weight: 700; color: #c9d6ea; }
+.pb .iap__legend { margin-top: 14px; }
+
+/* 押した時の動き（JSが .is-push を付け直す） */
+.pb.is-push .pb__in--l { animation: pb-in-l .45s ease-out; }
+.pb.is-push .pb__in--r { animation: pb-in-r .45s ease-out; }
+.pb.is-push[data-state="weak"] .pb__img--weak { animation: pb-crush .6s ease-out; }
+.pb.is-push[data-state="strong"] .pb__img--strong { animation: pb-pop .6s cubic-bezier(.3, 1.6, .5, 1); }
+.pb.is-push[data-state="strong"] .pb__out g { animation: pb-out .7s ease-out .15s backwards; }
+
+@keyframes pb-in-l { 0% { opacity: 0; left: -2%; } 40% { opacity: 1; } 100% { opacity: 0; left: 20%; } }
+@keyframes pb-in-r { 0% { opacity: 0; right: -2%; } 40% { opacity: 1; } 100% { opacity: 0; right: 20%; } }
+@keyframes pb-crush {
+  0% { transform: translateX(-50%) scale(1.04, 1); }
+  45% { transform: translateX(-50%) scale(.9, .96); }
+  100% { transform: translateX(-50%) scale(1, 1); }
+}
+@keyframes pb-pop {
+  0% { transform: translateX(-50%) scale(.92, .97); }
+  100% { transform: translateX(-50%) scale(1, 1); }
+}
+@keyframes pb-out { 0% { transform: scale(.55); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pb *, .pb.is-push * { animation: none !important; transition: none !important; }
+}
+
+/* 03 の締め：ボトルのまとめ */
+.base__point {
+  margin: 20px 0 0;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1.8;
+  color: var(--white);
+}
+.base__point em { font-style: normal; color: var(--lime); }
+
+@media (min-width: 900px) {
+  .pb { display: grid; grid-template-columns: 380px 1fr; grid-template-rows: auto auto 1fr auto; gap: 0 40px; padding: 28px 32px; }
+  .pb__title { grid-column: 1 / -1; font-size: 18px; }
+  .pb__switch { grid-column: 2; grid-row: 2; align-self: start; max-width: 460px; margin: 0 0 16px; }
+  .pb__body { display: contents; }
+  .pb__stage { grid-column: 1; grid-row: 2 / 4; max-width: none; }
+  .pb__caps { grid-column: 2; grid-row: 3; margin: 0; }
+  .pb__btn { font-size: 16px; }
+  .pb__state { font-size: 21px; }
+  .pb__say, .pb__then { font-size: 16px; }
+  .pb__hint { font-size: 14px; }
+  .pb .iap__legend { grid-column: 1 / -1; margin-top: 20px; }
+  .base__point { font-size: 22px; text-align: center; }
+}
+
+/* =========================================================
+   2026-11-03 PCの並びを整える
+   ========================================================= */
+@media (min-width: 900px) {
+  /* 04 選手の短い声：4件を2×2に（3列だと1件だけ取り残される） */
+  .voices { grid-template-columns: repeat(2, 1fr); }
+
+  /* 05 動画：先頭を大きく、高さは抑える */
+  .vid:first-child video { aspect-ratio: 2 / 1; }
+
+  /* 06 Instagram：3枚で横幅を埋める */
+  .insta__grid { max-width: none; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .insta__grid .reel { aspect-ratio: 4 / 5; }
+}
+
+/* 05 編集済みの選手の声（縦長・2026-11-03） */
+.vfeat { margin: 14px 0 20px; }
+.vfeat video {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+  border-radius: 14px;
+  background: #000;
+}
+.vfeat figcaption { display: grid; gap: 4px; max-width: 340px; margin: 10px auto 0; }
+.vfeat b { font-size: 16px; font-weight: 900; color: var(--white); }
+.vfeat span { font-size: 14px; line-height: 1.7; color: #d9e3f1; }
+
+@media (min-width: 900px) {
+  .vfeat { display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: center; margin: 18px 0 28px; padding: 24px; border-radius: 16px; background: #0f3869; }
+  .vfeat video { max-width: none; margin: 0; }
+  .vfeat figcaption { max-width: 420px; margin: 0; gap: 10px; }
+  .vfeat b { font-size: 22px; }
+  .vfeat span { font-size: 16px; }
+
+  /* 03 ボトル：PCは説明を2つとも並べ、選んだ方を明るくする */
+  .pb__caps { display: grid; gap: 12px; align-content: start; }
+  .pb__cap--strong, .pb[data-state="strong"] .pb__cap--weak { display: block; }
+  .pb__cap { opacity: .45; transition: opacity .3s ease; }
+  .pb[data-state="weak"] .pb__cap--weak, .pb[data-state="strong"] .pb__cap--strong { opacity: 1; }
+}
+
+/* 03 ボトルのまとめ（近藤さんの文脈・2026-11-03） */
+.base__point { margin: 22px 0 0; padding: 20px 18px; border-radius: 14px; background: #0f3869; font-size: 15px; font-weight: 700; text-align: left; }
+.base__point p { margin: 0; line-height: 1.85; color: var(--white); }
+.base__point p + p { margin-top: 12px; }
+.base__point .base__point-end { padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .2); font-size: 18px; font-weight: 900; }
+@media (min-width: 900px) {
+  .base__point { padding: 28px 36px; font-size: 17px; text-align: left; }
+  .base__point .base__point-end { font-size: 24px; text-align: center; }
+}
+
+/* 07 3つの価値：前にTHE BANANA紹介（紺）が入ったので上の余白を戻す */
+.banana + .values { padding-top: 72px; }
+
+@media (min-width: 900px) {
+  .banana + .values { padding-top: 96px; }
+  /* THE BANANA紹介：数字を写真の横に縦並びで、注記はその下に */
+  .banana__proof { grid-template-columns: 1.4fr 1fr; align-items: stretch; row-gap: 8px; }
+  .banana__photo { grid-row: 1 / 3; }
+  .banana__stats { grid-template-columns: 1fr; align-content: center; gap: 16px; }
+  .banana__stats div { padding: 22px 24px; }
+  .banana__stats b { font-size: 52px; }
+  .banana__note { grid-column: 2; align-self: end; }
+}
+
+/* 05 動画2本（編集版の選手の声＋煌くん）：PCは横に並べる */
+.vrow .vids { margin-top: 0; }
+@media (min-width: 900px) {
+  .vrow { display: grid; grid-template-columns: 340px 1fr; gap: 32px; align-items: start; margin-top: 18px; }
+  .vrow .vfeat { display: block; margin: 0; padding: 0; background: none; }
+  .vrow .vfeat figcaption { max-width: none; margin-top: 10px; gap: 4px; }
+  .vrow .vfeat b { font-size: 16px; }
+  .vrow .vfeat span { font-size: 14px; }
+  .vrow .vids { grid-template-columns: 1fr; }
+  .vrow .vid:first-child video { aspect-ratio: 16 / 9; }
+}
+
+/* 05 煌くん：スイングの写真（望月さんのInstagram 2026-06-09の投稿から） */
+.case__photo--swing img { object-position: 30% 50%; }
+
+/* 06 実際のトレーニングの様子（縦長動画5本）：スマホは横にすべらせる、PCは5列 */
+.tvs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 62%;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0 0 8px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+}
+.tv { scroll-snap-align: start; min-width: 0; }
+.tv video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; border-radius: 12px; background: #000; object-fit: cover; }
+.tv__who { display: flex; flex-wrap: wrap; gap: 0 8px; margin: 8px 0 0; font-size: 13px; line-height: 1.5; color: var(--text); }
+.tv__who b { font-weight: 900; }
+.tv__who span { color: var(--text-sub); }
+@media (min-width: 900px) {
+  .tvs { grid-auto-flow: row; grid-template-columns: repeat(5, 1fr); grid-auto-columns: auto; gap: 16px; overflow: visible; }
+}
+/* 04 ピラミッドの説明のすぐ後に置く（2026-11-03 近藤さん：実際の様子を早く見せる） */
+.pyramid .insta { margin-top: 48px; padding-top: 0; border-top: 0; }
+.pyramid .insta__title { font-size: 22px; }
+.insta__lead { margin: 6px 0 0; font-size: 15px; line-height: 1.8; color: var(--text-sub); }
+@media (min-width: 900px) { .pyramid .insta__title { font-size: 26px; } .insta__lead { font-size: 16px; } }
+.insta__head .insta__lead { flex-basis: 100%; order: 2; margin: 0; }
+.insta__head .insta__link { order: 3; }
+@media (min-width: 900px) {
+  .insta__head .insta__title { order: 1; }
+  .insta__head .insta__link { order: 1; }
+  .insta__head .insta__lead { order: 2; }
+}
+
+/* 03 望月さんの言葉：名前に顔写真を添える */
+.base__coach .base__coach-by { display: flex; align-items: center; gap: 14px; }
+.base__coach-by img { flex: none; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--lime); }
+.base__coach-by span { display: grid; gap: 2px; font-size: 13px; font-weight: 700; color: var(--text-sub); }
+.base__coach-by b { font-size: 18px; font-weight: 900; color: var(--navy); letter-spacing: .04em; }
+@media (min-width: 900px) {
+  .base__coach-by img { width: 76px; height: 76px; }
+  .base__coach-by b { font-size: 20px; }
+}
+
+/* 改行をそろえる（2026-11-03 近藤さん：句読点で急に折れて読みにくい）
+   文章は手で折らずに流し、日本語の単語の途中では折らない */
+.base__text--strong, .base__coach p, .athletes__title, .pyr__message p, .base__point p, .banana__pro-lead, .sec__lead {
+  word-break: normal;
+}
+.base__coach p { line-height: 1.85; }
+.base__text--strong { text-align: left; }
+@media (min-width: 900px) { .base__text--strong { text-align: center; } }
+
+/* THE BANANA紹介の見出しのサブコピー */
+.banana__sub {
+  display: block;
+  margin-top: 8px;
+  font-size: .62em;
+  font-weight: 900;
+  line-height: 1.5;
+  color: var(--lime);
+}
+/* 「ジム＝筋トレ」だと思っていた。：スマホでも1行に収める */
+.athletes__title { font-size: min(22px, 5.4vw); letter-spacing: 0; }
+@media (min-width: 900px) { .athletes__title { font-size: 24px; } }
+
+/* 02 の締め「その悩みは、努力が足りないせいではありません。」の直後に選手の声の動画（明るい地） */
+.feel .vfeat { margin: 28px 0 0; }
+.feel .vfeat b { color: var(--navy); }
+.feel .vfeat span { color: var(--text-sub); }
+@media (min-width: 900px) {
+  .feel .vfeat { max-width: 760px; margin: 36px auto 0; background: var(--navy); }
+  .feel .vfeat b { color: var(--white); }
+  .feel .vfeat span { color: #d9e3f1; }
+}
+/* 05 煌くんの動画1本：PCで大きくなりすぎないように */
+@media (min-width: 900px) {
+  .change .vids { grid-template-columns: 1fr 1fr; max-width: none; }
+  .change .vid:first-child { grid-column: auto; }
+  .change .vid:first-child video { aspect-ratio: 16 / 9; }
+}
+/* 02 の締め：1文ずつ、右端まで詰めて流す */
+.feel__bridge, .feel__bridge span { word-break: normal; text-wrap: wrap; }
+
+/* 06 見出し：「もっと早く知っていれば」をスマホでも1行に */
+.coach__q { white-space: nowrap; font-size: min(1em, 6.9vw); }
+.coach__dash { display: none; }
+@media (min-width: 900px) { .coach__q { font-size: 1em; } .coach__dash { display: inline; } }
+
+/* FV 問いかけの紺の帯：文字の幅だけにして、右の選手の顔にかけない */
+.question::before {
+  inset: calc(var(--u) * -1.6) calc(var(--u) * -3) calc(var(--u) * -1.6) calc(var(--pad) * -1);
+  background: linear-gradient(90deg, rgba(1, 36, 80, .85) 0%, rgba(1, 36, 80, .8) 75%, rgba(1, 36, 80, 0) 100%);
+}
+
+/* FV（スマホ）：写真を少し下げ、問いかけを選手の顔より上に収める */
+@media (max-width: 899px) {
+  .fv__visual { top: calc(var(--u) * 24); }
+  .fv__lower { min-height: calc(var(--u) * 149.05); }
+}
+
+/* =========================================================
+   FV（スマホ）：最初の画面に問いかけまで入るように縦を詰める（2026-11-03 近藤さん：iPhone 17で問いかけが見えない）
+   目安＝問いかけの下端が画面の上から560px以内（下に体験会のボタンとSafariのバーが来るため）
+   ========================================================= */
+@media (max-width: 899px) {
+  .fv__inner { padding-top: calc(var(--u) * 3.5 + env(safe-area-inset-top)); }
+  .brand__mark { height: calc(var(--u) * 11); width: auto; }
+  .brand__line1 { font-size: calc(var(--u) * 5.4); }
+  .brand__line2 { font-size: calc(var(--u) * 3.8); }
+  /* 開校の札と「中学生のための」を横に並べる */
+  .target { margin-top: calc(var(--u) * 4); }
+  .target__open { display: inline-block; margin: 0 calc(var(--u) * 2) calc(var(--u) * 1.5) 0; padding: calc(var(--u) * .6) calc(var(--u) * 2.4); font-size: calc(var(--u) * 3.3); vertical-align: middle; }
+  .target__tag { font-size: calc(var(--u) * 4); padding: calc(var(--u) * .6) calc(var(--u) * 2.6); vertical-align: middle; }
+  .target__text { margin-top: calc(var(--u) * 1.8); font-size: calc(var(--u) * 3.5); line-height: 1.45; }
+  .catch { margin-top: calc(var(--u) * 4.5); font-size: calc(var(--u) * 10.4); line-height: 1.14; }
+  .fv__lower { margin-top: calc(var(--u) * 5); }
+  .empathy { margin-top: 0; line-height: 1.55; }
+  .divider { margin: calc(var(--u) * 3) 0; }
+  .question { line-height: 1.5; }
+}
+
+/* =========================================================
+   2026-11-03 夜 近藤さんの確認（iPhone 17）を受けて
+   ========================================================= */
+
+/* FV（スマホ）：選手と富士山の写真をかなり上へ。写真は少し小さく右に寄せ、顔は問いかけの右に来る */
+@media (max-width: 899px) {
+  .fv__visual { top: calc(var(--u) * -28); width: calc(var(--u) * 80); }
+  .fv__lower { min-height: calc(var(--u) * 82); }
+  .question::before { display: none; }
+}
+
+/* 03 ボトル（スマホ）：ボタンのすぐ下に説明、その下に小さめのボトル */
+@media (max-width: 899px) {
+  .pb__body { display: flex; flex-direction: column; }
+  .pb__caps { order: 1; margin: 0 0 12px; }
+  .pb__stage { order: 2; max-width: 230px; }
+  .pb__hint { display: none; }
+}
+@media (min-width: 900px) {
+  .pb { grid-template-columns: 300px 1fr; }
+}
+
+/* 文章の右の空きをなくす：本文は単語の区切りで折らず、右端まで詰めて流す（見出しはそのまま） */
+.sec p, .sec li, .sec dd, .faq__a, .case__what, .case__quote { word-break: normal; text-wrap: wrap; }
+
+/* 04 ピラミッド：アカデミーで指導する4つの層に印、まとめの一文 */
+.pyr__item--academy { position: relative; }
+.pyr__item--academy::after {
+  content: "アカデミーで指導";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+.pyr__scope {
+  margin: 20px 0 0;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--white);
+  border: 2px solid var(--navy);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.8;
+  color: var(--text);
+}
+.pyr__scope b { color: var(--navy); font-weight: 900; }
+@media (min-width: 900px) { .pyr__scope { padding: 20px 28px; font-size: 18px; text-align: center; } }
+
+/* =========================================================
+   FV の文字を減らす（2026-11-03 近藤さん）
+   ロゴは横一列で小さく／0期開校は体験会ボタンの下へ／悩みの3行は小さめ
+   ========================================================= */
+.brand { gap: calc(var(--u) * 2); }
+.brand__mark { height: calc(var(--u) * 7); width: auto; }
+.brand__rule { margin: calc(var(--u) * .6) 0; }
+.brand__name { flex-direction: row; flex-wrap: wrap; gap: 0 .4em; align-items: baseline; }
+.brand__line1,
+.brand__line2 { font-size: calc(var(--u) * 4); }
+.target { margin-top: calc(var(--u) * 4); }
+.fv__open {
+  margin-top: calc(var(--u) * 2);
+  text-align: center;
+  color: var(--white);
+  font-size: calc(var(--u) * 3.4);
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-shadow: 0 1px 8px rgba(0, 20, 60, .8);
+}
+.fv__open b { margin: 0 .3em; color: var(--lime); font-size: 1.15em; }
+@media (max-width: 899px) {
+  .brand__mark { height: calc(var(--u) * 8); }
+  .brand__line1,
+  .brand__line2 { font-size: calc(var(--u) * 4.2); }
+  .empathy { font-size: calc(var(--u) * 3.4); line-height: 1.5; }
+  .fv__cta { padding-bottom: calc(var(--u) * 3 + env(safe-area-inset-bottom)); }
+}
+@media (min-width: 900px) {
+  .brand__mark { height: 44px; }
+  .brand__line1,
+  .brand__line2 { font-size: 24px; }
+  .empathy { font-size: calc(var(--u) * 3.2); }
+  .fv__open { text-align: left; font-size: 17px; margin-top: 12px; }
+}
+.brand__name { white-space: nowrap; }
+@media (max-width: 899px) {
+  .brand__mark { height: calc(var(--u) * 6.5); }
+  .brand__line1,
+  .brand__line2 { font-size: calc(var(--u) * 3.6); }
+}
+@media (min-width: 900px) {
+  .brand__mark { height: 36px; }
+  .brand__line1,
+  .brand__line2 { font-size: 19px; }
+  .empathy { font-size: 18px; }
+}
+
+/* FV（スマホ）：ロゴをさらに小さく。画面の高さが余る機種では、写真と体験会ボタンを画面の下端までのばす（2026-11-03 近藤さん：iPhone 17で下に少し隙間） */
+@media (max-width: 899px) {
+  .brand { gap: calc(var(--u) * 1.6); }
+  .brand__mark { height: calc(var(--u) * 5.4); }
+  .brand__line1,
+  .brand__line2 { font-size: calc(var(--u) * 3); letter-spacing: .02em; }
+  .fv { display: flex; flex-direction: column; min-height: 100svh; }
+  .fv__inner { flex: 1; display: flex; flex-direction: column; }
+  .fv__lower { flex: 1; }
+  .fv__visual { top: auto; bottom: calc(var(--u) * 3.58); }
+}
+/* FV（スマホ）：写真の芝生を画面の下端（iPhoneのホームバーの下）まで届かせ、ボタンの下の青い帯をなくす（2026-11-03 近藤さんのiPhone 17のスクショ） */
+@media (max-width: 899px) {
+  .fv__visual { bottom: calc(var(--u) * -1.6 - env(safe-area-inset-bottom)); }
+}
+/* FV（スマホ）：写真を大きくして下の方を埋める（字とはかぶらないので・2026-11-03 近藤さん） */
+@media (max-width: 899px) {
+  .fv__visual { width: calc(var(--u) * 92); }
+}
+/* 「2026年12月 0期開講」を見やすく：紺の札にライムのふち（OGP画像と同じ形）・2026-11-03 近藤さん */
+.fv__open {
+  display: table;
+  margin: calc(var(--u) * 2.4) auto 0;
+  padding: calc(var(--u) * 1) calc(var(--u) * 4);
+  border: 2px solid var(--lime);
+  border-radius: 999px;
+  background: rgba(1, 31, 69, .88);
+  font-size: calc(var(--u) * 4.2);
+  font-weight: 900;
+  line-height: 1.3;
+  text-shadow: none;
+}
+.fv__open b { font-size: 1.2em; }
+@media (min-width: 900px) {
+  .fv__open { margin: 14px 0 0; padding: 6px 20px; font-size: 19px; }
+}
+@media (max-width: 899px) {
+  .fv__visual { bottom: calc(var(--u) * -5 - env(safe-area-inset-bottom)); }
+}

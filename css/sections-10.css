@@ -1,0 +1,186 @@
+/* =========================================================
+   2026-11-03 03 写真で見る、ペットボトルと体の中（動く演出）
+   画像はAIで作ったイメージ。ボトル＝8秒で「つぶれる→張る」、体＝7秒の呼吸
+   ========================================================= */
+
+/* ---- ペットボトル ---- */
+.rbottle {
+  margin: 24px 0 0;
+  padding: 20px 14px 18px;
+  border-radius: 16px;
+  background: #082f5e;
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.rbottle__title { margin: 0 0 12px; padding: 0 4px; font-size: 16px; font-weight: 900; color: var(--white); }
+.rbottle__stage {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  aspect-ratio: 600 / 1005;
+  border-radius: 14px;
+  background: #0b2a55;
+}
+.rbottle__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: rb-zoom 8s ease-in-out infinite;
+}
+.rbottle__img--weak { animation-name: rb-zoom, rb-squish; }
+.rbottle__img--strong { opacity: 0; animation-name: rb-zoom, rb-show; }
+.rbottle__glow {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 70%;
+  height: 72%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(230, 251, 2, .42), rgba(230, 251, 2, 0));
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: rb-glow 8s ease-in-out infinite;
+}
+.rbottle__push {
+  position: absolute;
+  top: 55%;
+  width: 34px;
+  height: 34px;
+  border-top: 5px solid var(--white);
+  border-right: 5px solid var(--white);
+  border-radius: 3px;
+  opacity: 0;
+  animation: rb-push-l 8s ease-in-out infinite;
+}
+.rbottle__push--l { left: 6%; transform: rotate(45deg); }
+.rbottle__push--r { right: 6%; transform: rotate(-135deg); animation-name: rb-push-r; }
+.rbottle__state {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(1, 31, 69, .85);
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--white);
+  animation: rb-hide 8s steps(1, end) infinite;
+}
+.rbottle__state--strong { color: var(--lime); opacity: 0; animation-name: rb-show-step; }
+.rbottle__notes { display: grid; gap: 10px; margin: 14px 0 0; }
+.rbottle__note { padding: 12px 14px; border-radius: 12px; background: #0f3869; animation: rb-note-weak 8s ease-in-out infinite; }
+.rbottle__note--strong { animation-name: rb-note-strong; }
+
+@keyframes rb-zoom { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+@keyframes rb-squish {
+  0%, 10% { transform: scale(1.06); }
+  20%, 30% { transform: scale(1.02, 1.07); }
+  38%, 100% { transform: scale(1.06); }
+}
+@keyframes rb-show { 0%, 38% { opacity: 0; } 50%, 88% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes rb-glow { 0%, 44% { opacity: 0; } 60%, 82% { opacity: 1; } 96%, 100% { opacity: 0; } }
+@keyframes rb-push-l {
+  0%, 10% { opacity: 0; transform: translateX(-10px) rotate(45deg); }
+  20%, 30% { opacity: 1; transform: translateX(6px) rotate(45deg); }
+  36%, 58% { opacity: 0; transform: translateX(-10px) rotate(45deg); }
+  66%, 78% { opacity: 1; transform: translateX(0) rotate(45deg); }
+  86%, 100% { opacity: 0; transform: translateX(-10px) rotate(45deg); }
+}
+@keyframes rb-push-r {
+  0%, 10% { opacity: 0; transform: translateX(10px) rotate(-135deg); }
+  20%, 30% { opacity: 1; transform: translateX(-6px) rotate(-135deg); }
+  36%, 58% { opacity: 0; transform: translateX(10px) rotate(-135deg); }
+  66%, 78% { opacity: 1; transform: translateX(0) rotate(-135deg); }
+  86%, 100% { opacity: 0; transform: translateX(10px) rotate(-135deg); }
+}
+@keyframes rb-hide { 0% { opacity: 1; } 44% { opacity: 0; } 94% { opacity: 1; } }
+@keyframes rb-show-step { 0% { opacity: 0; } 44% { opacity: 1; } 94% { opacity: 0; } }
+@keyframes rb-note-weak { 0%, 40% { opacity: 1; box-shadow: inset 4px 0 0 var(--white); } 50%, 90% { opacity: .55; box-shadow: none; } 100% { opacity: 1; box-shadow: inset 4px 0 0 var(--white); } }
+@keyframes rb-note-strong { 0%, 40% { opacity: .55; box-shadow: none; } 50%, 90% { opacity: 1; box-shadow: inset 4px 0 0 var(--lime); } 100% { opacity: .55; box-shadow: none; } }
+
+/* ---- 体の中 ---- */
+.rbody__stage {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  aspect-ratio: 816 / 957;
+  border-radius: 14px;
+  background: #0b2a55;
+}
+.rbody__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 80%;
+  animation: rbd-img 7s cubic-bezier(.45, 0, .25, 1) infinite;
+}
+.rbody__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rbody__dia, .rbody__floor { fill: none; stroke: var(--lime); stroke-width: 12; stroke-linecap: round; filter: drop-shadow(0 0 10px rgba(230, 251, 2, .7)); }
+.rbody__wall { fill: none; stroke: rgba(230, 251, 2, .8); stroke-width: 8; stroke-linecap: round; }
+.rbody__arrows path { fill: none; stroke: var(--white); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+.rbody__dia, .rbody__floor, .rbody__wall, .rbody__glow, .rbody__arrows { transform-box: view-box; }
+.rbody__dia { transform-origin: 572px 760px; animation: rbd-dia 7s cubic-bezier(.45, 0, .25, 1) infinite; }
+.rbody__floor { transform-origin: 545px 1215px; animation: rbd-floor 7s cubic-bezier(.45, 0, .25, 1) infinite; }
+.rbody__wall--l { animation: rbd-wall-l 7s cubic-bezier(.45, 0, .25, 1) infinite; }
+.rbody__wall--r { animation: rbd-wall-r 7s cubic-bezier(.45, 0, .25, 1) infinite; }
+.rbody__glow { transform-origin: 545px 1010px; animation: rbd-glow 7s cubic-bezier(.45, 0, .25, 1) infinite; }
+.rbody__arrows { animation: br-arrows 7s ease-in-out infinite; }
+
+.rbody__tag {
+  position: absolute;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(1, 31, 69, .88);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--white);
+  white-space: nowrap;
+}
+.rbody__tag--dia { right: 8px; top: 47%; }
+.rbody__tag--iap { left: 50%; top: 84%; transform: translateX(-50%); color: var(--lime); }
+.rbody__tag--floor { right: 8px; bottom: 8px; }
+.rbody__phase {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  display: grid;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(1, 31, 69, .88);
+  font-size: 15px;
+  font-weight: 900;
+}
+.rbody__in, .rbody__out { grid-area: 1 / 1; }
+.rbody__in { color: var(--lime); animation: br-in 7s steps(1, end) infinite; }
+.rbody__out { color: var(--white); opacity: 0; animation: br-out 7s steps(1, end) infinite; }
+
+@keyframes rbd-img { 0%, 100% { transform: scale(1); } 42%, 56% { transform: scale(1.025, 1.015); } }
+@keyframes rbd-dia { 0%, 100% { transform: translateY(0) scaleY(1); } 42%, 56% { transform: translateY(70px) scaleY(.5); } }
+@keyframes rbd-floor { 0%, 100% { transform: translateY(0); } 42%, 56% { transform: translateY(12px); } }
+@keyframes rbd-wall-l { 0%, 100% { transform: translateX(0); } 42%, 56% { transform: translateX(-16px); } }
+@keyframes rbd-wall-r { 0%, 100% { transform: translateX(0); } 42%, 56% { transform: translateX(16px); } }
+@keyframes rbd-glow { 0%, 100% { opacity: .1; transform: scale(.8); } 42%, 56% { opacity: 1; transform: scale(1.05); } }
+
+/* 動きを減らす設定の人には、圧が満ちた状態で止めて見せる */
+@media (prefers-reduced-motion: reduce) {
+  .rbottle__img, .rbottle__glow, .rbottle__push, .rbottle__state, .rbottle__note,
+  .rbody__img, .rbody__dia, .rbody__floor, .rbody__wall, .rbody__glow, .rbody__arrows, .rbody__in, .rbody__out { animation: none; }
+  .rbottle__img--strong, .rbottle__glow, .rbottle__state--strong { opacity: 1; }
+  .rbottle__state--weak { opacity: 0; }
+  .rbody__dia { transform: translateY(70px) scaleY(.5); }
+  .rbody__glow { opacity: 1; }
+}
+
+@media (min-width: 900px) {
+  .rbottle { max-width: 760px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; align-items: center; padding: 28px; }
+  .rbottle__title, .rbottle .iap__legend { grid-column: 1 / -1; }
+  .rbottle__notes { margin: 0; }
+}

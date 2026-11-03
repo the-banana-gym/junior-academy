@@ -1,0 +1,96 @@
+/* =========================================================
+   2026-11-03 Private gym THE BANANA とは／会場の地図リンク
+   ========================================================= */
+.banana__name {
+  display: inline-block;
+  margin-top: 6px;
+  font: 800 italic clamp(22px, 6.4vw, 34px) / 1.2 var(--en);
+  color: var(--lime);
+  letter-spacing: -.01em;
+}
+
+/* 店舗の実績 */
+.banana__proof { display: grid; gap: 12px; margin: 22px 0 0; }
+.banana__photo { margin: 0; }
+.banana__photo img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.banana__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+.banana__stats div {
+  padding: 14px 12px;
+  border-radius: 14px;
+  background: #133b6b;
+  border: 1px solid rgba(255, 255, 255, .16);
+}
+.banana__stats dt { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, .85); }
+.banana__stats dd { margin: 4px 0 0; }
+.banana__stats b { display: block; font: 800 italic 40px / 1 var(--en); color: var(--lime); }
+.banana__stats span { display: block; margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--white); }
+.banana__note { margin: 0; font-size: 12px; color: rgba(255, 255, 255, .8); }
+
+/* 独自のプログラム */
+.banana__h { margin: 32px 0 0; font-size: 20px; font-weight: 900; color: var(--white); }
+.banana__steps { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.banana__steps li {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #0f3869;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .9);
+}
+.banana__steps span { font: 800 italic 14px var(--en); color: var(--lime); }
+.banana__steps b { font-size: 17px; font-weight: 900; color: var(--white); }
+.banana__steps em { font-style: normal; }
+
+/* 代表 */
+.banana__kondo {
+  display: grid;
+  gap: 14px;
+  margin: 32px 0 0;
+  padding: 18px;
+  border-radius: 16px;
+  background: #0f3869;
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.banana__kondo img { display: block; width: 100%; max-width: 280px; height: auto; border-radius: 12px; }
+.banana__role { margin: 0; font-size: 13px; font-weight: 700; color: var(--lime); }
+.banana__person { margin: 2px 0 0; font-size: 22px; font-weight: 900; color: var(--white); }
+.banana__text { margin: 10px 0 0; font-size: 15px; line-height: 1.85; color: var(--white); }
+.banana__list { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.banana__list li { position: relative; padding-left: 16px; font-size: 13px; font-weight: 700; line-height: 1.6; color: rgba(255, 255, 255, .9); }
+.banana__list li::before { content: ""; position: absolute; left: 0; top: .6em; width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+
+.banana__food {
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  border-left: 4px solid var(--lime);
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--white);
+  background: #0f3a5f;
+}
+.banana__food b { color: var(--lime); }
+
+/* 会場の地図リンク */
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 900px) {
+  .banana__proof { grid-template-columns: 1.2fr 1fr; align-items: center; column-gap: 24px; }
+  .banana__note { grid-column: 2; }
+  .banana__steps { grid-template-columns: repeat(4, 1fr); }
+  .banana__steps li { grid-template-columns: auto 1fr; align-content: start; }
+  .banana__steps em { grid-column: 1 / -1; }
+  .banana__kondo { grid-template-columns: 260px 1fr; align-items: start; gap: 28px; padding: 26px; }
+}

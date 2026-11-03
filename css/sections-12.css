@@ -1,0 +1,67 @@
+/* =========================================================
+   2026-11-03 08 測定する10項目（望月さんの評価項目）
+   ========================================================= */
+.growth__items { display: grid; gap: 12px; margin: 24px 0 0; }
+.growth__items > div {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #0f3869;
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.growth__items-h { display: flex; align-items: baseline; gap: 8px; margin: 0; font-size: 16px; font-weight: 900; color: var(--white); }
+.growth__items-h span { font-size: 13px; color: var(--lime); }
+.growth__items ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.growth__items li {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #1a4378;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+@media (min-width: 900px) {
+  .growth__items { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+
+.radar__label text { font-size: 18px; }
+
+/* 05 煌選手：数字の時期 */
+.case__when { margin: 4px 0 0; font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, .85); }
+.case__stats dt small { display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, .8); }
+
+/* 08 10項目のチャート */
+.radar svg { max-width: 520px; }
+.radar__label text { font-size: 22px; }
+.radar__label .radar__l-out { fill: var(--lime); }
+.radar__label .radar__lv { font-size: 15px; font-weight: 700; fill: rgba(255, 255, 255, .7); }
+.radar__score { display: flex; justify-content: center; align-items: baseline; gap: 12px; margin: 10px 0 0; font-size: 14px; font-weight: 700; color: var(--white); }
+.radar__score b { margin: 0 2px 0 6px; font: 800 italic 30px / 1 var(--en); }
+.radar__score i { font-style: normal; color: rgba(255, 255, 255, .8); }
+.radar__score-after b { color: var(--lime); }
+.radar__legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 8px 0 0; font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, .9); }
+.radar__legend .radar__l-base::before, .radar__legend .radar__l-out::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 50%; background: var(--white); }
+.radar__legend .radar__l-out { color: var(--lime); }
+.radar__legend .radar__l-out::before { background: var(--lime); }
+
+/* FV：開校時期と期間（2026-11-03 近藤さん：12月0期開校・3か月） */
+.target__open {
+  display: table;
+  margin: 0 0 calc(var(--u) * 2.6);
+  padding: calc(var(--u) * .8) calc(var(--u) * 3);
+  border: 2px solid var(--lime);
+  border-radius: 999px;
+  background: #011f45;
+  color: var(--white);
+  font-size: calc(var(--u) * 3.8);
+  font-weight: 900;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+.target__open b { margin: 0 .3em; color: var(--lime); font-size: 1.2em; }
+.target__text b { color: var(--lime); font-size: 1.15em; }
+@media (min-width: 900px) {
+  .target__open { font-size: 17px; padding: 5px 16px; }
+}
+.target__text .nw { display: inline-block; }
+@media (min-width: 900px) { .target__open { font-size: 18px; } }
